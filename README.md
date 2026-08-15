@@ -66,26 +66,9 @@ Rama `main`, carpeta raíz, servido por GitHub Pages.
 **Estado actual:** el sitio está en vivo en
 <https://ramonzamora89.github.io/zamoralibre/>, sin dominio propio todavía.
 
-### Activar www.zamoralibre.com
-
-1. En GoDaddy, en el DNS de `zamoralibre.com`, borrar los registros que apuntan
-   a Squarespace y dejar:
-   - Cuatro registros `A` en `@` → `185.199.108.153`, `185.199.109.153`,
-     `185.199.110.153`, `185.199.111.153`
-   - Un `CNAME` en `www` → `ramonzamora89.github.io`
-2. En este repositorio, volver a nombrar el archivo y publicar:
-   ```bash
-   git mv CNAME.pendiente CNAME
-   git commit -m "Activa el dominio propio"
-   git push
-   ```
-3. En GitHub → Settings → Pages, esperar a que valide el dominio y marcar
-   **Enforce HTTPS** (el certificado tarda unos minutos en emitirse).
-4. Cuando `https://www.zamoralibre.com` cargue bien, recién ahí cancelar
-   Squarespace.
-
-El archivo se dejó en pausa porque, mientras exista un `CNAME`, GitHub Pages
-redirige todo el tráfico al dominio propio, que todavía apunta a Squarespace.
+Falta un solo paso: apuntar `www.zamoralibre.com` desde GoDaddy.
+Los registros DNS exactos y el procedimiento completo están en
+**[PROJECT.md](PROJECT.md)**.
 
 ## Notas
 
