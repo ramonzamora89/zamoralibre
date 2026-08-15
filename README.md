@@ -20,7 +20,7 @@ Es una réplica estática del sitio que antes vivía en Squarespace: mismas secc
 │   ├── js/site.js          # Contador de días, menú y carrusel
 │   ├── fonts/              # Poppins y Montserrat (woff2)
 │   └── img/                # Fotografías, logotipos y gráficos de campaña
-├── CNAME                   # Dominio propio: www.zamoralibre.com
+├── CNAME.pendiente         # Dominio propio, todavía sin activar (ver abajo)
 └── .nojekyll               # GitHub Pages sirve los archivos tal cual
 ```
 
@@ -61,11 +61,31 @@ Y abrir <http://localhost:8000>. Hace falta un servidor (no basta con abrir el a
 
 ## Publicación
 
-- Rama `main`, carpeta raíz, servido por GitHub Pages.
-- Dominio propio en `CNAME`: `www.zamoralibre.com`.
-- DNS en GoDaddy:
-  - Cuatro registros `A` en `@` → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
-  - Un `CNAME` en `www` → `ramonzamora89.github.io`
+Rama `main`, carpeta raíz, servido por GitHub Pages.
+
+**Estado actual:** el sitio está en vivo en
+<https://ramonzamora89.github.io/zamoralibre/>, sin dominio propio todavía.
+
+### Activar www.zamoralibre.com
+
+1. En GoDaddy, en el DNS de `zamoralibre.com`, borrar los registros que apuntan
+   a Squarespace y dejar:
+   - Cuatro registros `A` en `@` → `185.199.108.153`, `185.199.109.153`,
+     `185.199.110.153`, `185.199.111.153`
+   - Un `CNAME` en `www` → `ramonzamora89.github.io`
+2. En este repositorio, volver a nombrar el archivo y publicar:
+   ```bash
+   git mv CNAME.pendiente CNAME
+   git commit -m "Activa el dominio propio"
+   git push
+   ```
+3. En GitHub → Settings → Pages, esperar a que valide el dominio y marcar
+   **Enforce HTTPS** (el certificado tarda unos minutos en emitirse).
+4. Cuando `https://www.zamoralibre.com` cargue bien, recién ahí cancelar
+   Squarespace.
+
+El archivo se dejó en pausa porque, mientras exista un `CNAME`, GitHub Pages
+redirige todo el tráfico al dominio propio, que todavía apunta a Squarespace.
 
 ## Notas
 
