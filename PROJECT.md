@@ -112,6 +112,10 @@ Hecho, en español e inglés, sin commit todavía:
   El ONA Founder Award 2026 es de José Carlos Zamora: no va.
 - **Páginas nuevas**: `/trayectoria/` y `/english/trajectory/`, con la línea del tiempo de
   investigaciones e impactos y la lista completa de premios.
+- **Cronología del caso**: «Lo más reciente» pasó a ser una línea del tiempo horizontal
+  de 32 hitos (29/7/2022 al 8/9/2026, estudio del Reuters Institute sobre la campaña
+  de odio en X), con flechas, teclado y botones por año. Ver README.
+- **Selector de idioma ES/EN** y **cabecera fija** en todas las páginas.
 - **Mensajes sugeridos** (portada y `/comparte/`) reescritos; ya no dicen «730 días».
 - **Cobertura**: bloque 2024–2026 al inicio de `/media-coverage/`.
 - **Enlaces de state.gov** apuntan al archivo oficial `2021-2025.state.gov`. El 14/9
