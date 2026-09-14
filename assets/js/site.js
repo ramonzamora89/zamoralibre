@@ -2,8 +2,9 @@
 (function () {
   "use strict";
 
-  /* ----- Contador de días de detención --------------------------------- */
-  /* Misma lógica que el sitio original: días completos desde 2022-07-29. */
+  /* ----- Contador de días de persecución judicial ------------------------ */
+  /* Días completos desde la captura (2022-07-29). Los 1,295 días en prisión
+     son una cifra fija y van escritos en el HTML. */
   function diasDesde(fechaISO) {
     var inicio = new Date(fechaISO);
     var ahora = new Date();
@@ -11,10 +12,10 @@
   }
 
   function pintarContador() {
-    var dias = diasDesde("2022-07-29");
     document.querySelectorAll("[data-contador]").forEach(function (el) {
-      var texto = el.getAttribute("data-contador"); // p. ej. "días de detención arbitraria"
-      el.innerHTML = '<span class="dias-numero">' + dias + "</span> " + texto;
+      var dias = diasDesde(el.getAttribute("data-desde") || "2022-07-29");
+      var numero = el.querySelector(".dias-numero");
+      if (numero) numero.textContent = dias.toLocaleString("en-US");
     });
   }
 
@@ -99,11 +100,79 @@
     });
   }
 
+  /* ----- Cronología horizontal del caso ---------------------------------- */
+  /* Abre en el hecho más reciente; flechas, teclado y botones por año. */
+  function iniciarCronologia() {
+    var suave = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+
+    document.querySelectorAll("[data-cronologia]").forEach(function (bloque) {
+      var pista = bloque.querySelector("[data-cronologia-pista]");
+      if (!pista) return;
+      var items = Array.prototype.slice.call(pista.children);
+      var anterior = bloque.querySelector("[data-cronologia-anterior]");
+      var siguiente = bloque.querySelector("[data-cronologia-siguiente]");
+      var botonesAnio = bloque.querySelectorAll("[data-cronologia-anio]");
+
+      function inicioVisible() {
+        return pista.scrollLeft + parseFloat(getComputedStyle(pista).paddingLeft);
+      }
+
+      function irA(item, comportamiento) {
+        var destino = item.offsetLeft - parseFloat(getComputedStyle(pista).paddingLeft);
+        pista.scrollTo({ left: destino, behavior: comportamiento || suave });
+      }
+
+      function paso() {
+        return Math.max(items[0].getBoundingClientRect().width, pista.clientWidth * 0.8);
+      }
+
+      function actualizar() {
+        var max = pista.scrollWidth - pista.clientWidth - 1;
+        if (anterior) anterior.disabled = pista.scrollLeft <= 0;
+        if (siguiente) siguiente.disabled = pista.scrollLeft >= max;
+        // Año del primer hecho visible a la izquierda.
+        var borde = inicioVisible() + 20, anio = items[0].getAttribute("data-anio");
+        items.forEach(function (it) { if (it.offsetLeft <= borde) anio = it.getAttribute("data-anio"); });
+        if (pista.scrollLeft >= max) anio = items[items.length - 1].getAttribute("data-anio");
+        botonesAnio.forEach(function (b) {
+          b.setAttribute("aria-pressed", String(b.getAttribute("data-cronologia-anio") === anio));
+        });
+      }
+
+      if (anterior) anterior.addEventListener("click", function () { pista.scrollBy({ left: -paso(), behavior: suave }); });
+      if (siguiente) siguiente.addEventListener("click", function () { pista.scrollBy({ left: paso(), behavior: suave }); });
+
+      botonesAnio.forEach(function (b) {
+        b.addEventListener("click", function () {
+          var anio = b.getAttribute("data-cronologia-anio");
+          for (var i = 0; i < items.length; i++) {
+            if (items[i].getAttribute("data-anio") === anio) { irA(items[i]); break; }
+          }
+        });
+      });
+
+      pista.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowRight") { e.preventDefault(); pista.scrollBy({ left: paso(), behavior: suave }); }
+        if (e.key === "ArrowLeft") { e.preventDefault(); pista.scrollBy({ left: -paso(), behavior: suave }); }
+        if (e.key === "Home") { e.preventDefault(); pista.scrollTo({ left: 0, behavior: suave }); }
+        if (e.key === "End") { e.preventDefault(); pista.scrollTo({ left: pista.scrollWidth, behavior: suave }); }
+      });
+
+      pista.addEventListener("scroll", actualizar, { passive: true });
+      window.addEventListener("resize", actualizar);
+
+      // Empieza mostrando lo más reciente.
+      pista.scrollLeft = pista.scrollWidth;
+      actualizar();
+    });
+  }
+
   function iniciar() {
     pintarContador();
     iniciarMenu();
     iniciarCarrusel();
     iniciarMarquesina();
+    iniciarCronologia();
   }
 
   if (document.readyState === "loading") {
